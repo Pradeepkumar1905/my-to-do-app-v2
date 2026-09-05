@@ -21,7 +21,6 @@ function App() {
 
   useEffect(() => {
     loadUser()
-    loadTodos()
   }, [])
 
   async function loadUser() {
@@ -30,6 +29,7 @@ function App() {
 
     if (data.clientPrincipal) {
       setUser(data.clientPrincipal)
+      loadTodos()
     }
   }
 
@@ -215,6 +215,8 @@ function App() {
           Todo Input
           ----------------------------- */}
 
+  {user && (
+    <>
       <input
         type="text"
         value={todo}
@@ -225,6 +227,79 @@ function App() {
       <button onClick={addTodo}>
         Add
       </button>
+
+      <ul>
+        {todos.map((task) => (
+          <li key={task.id}>
+
+            {editingId === task.id ? (
+
+              // Editing mode
+              <>
+                <input
+                  type="text"
+                  value={editTitle}
+                  onChange={(event) =>
+                    setEditTitle(event.target.value)
+                  }
+                />
+
+                <button onClick={() => updateTodo(task.id)}>
+                  Update
+                </button>
+
+                <button onClick={cancelEditing}>
+                  Cancel
+                </button>
+              </>
+
+            ) : (
+
+              // Normal mode
+              <>
+                <input
+                  type="checkbox"
+                  checked={task.completed}
+                  onChange={() =>
+                    toggleTodo(task.id, task.completed)
+                  }
+                />
+
+                <div>
+                  <div
+                    style={{
+                      textDecoration: task.completed
+                        ? 'line-through'
+                        : 'none'
+                    }}
+                  >
+                    {task.title}
+                  </div>
+
+                  <div>
+                    {formatDate(task.createdAt)}
+                  </div>
+                </div>
+
+                <button
+                  onClick={() => startEditing(task)}
+                >
+                  Edit
+                </button>
+
+                <button
+                  onClick={() => deleteTodo(task.id)}
+                >
+                  Delete
+                </button>
+              </>
+            )}
+
+          </li>
+        ))}
+      </ul>
+    </>
+  )}
 
 
       {/* -----------------------------
