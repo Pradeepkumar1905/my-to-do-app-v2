@@ -37,7 +37,9 @@ function App() {
     const response = await fetch('/api/todos')
     const data = await response.json()
 
-    setTodos(data)
+    if (Array.isArray(data)) {
+      setTodos(data)
+    }
   }
 
 
@@ -62,7 +64,10 @@ function App() {
 
     const newTodo = await response.json()
 
-    setTodos([...todos, newTodo])
+  setTodos((currentTodos) => [
+    ...currentTodos,
+    newTodo
+  ])
     setTodo('')
   }
 
