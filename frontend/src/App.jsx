@@ -21,7 +21,7 @@ function App() {
   }, [])
 
   async function loadTodos() {
-    const response = await fetch('http://localhost:7071/api/todos')
+    const response = await fetch('/api/todos')
     const data = await response.json()
 
     setTodos(data)
@@ -37,7 +37,7 @@ function App() {
       return
     }
 
-    const response = await fetch('http://localhost:7071/api/todos', {
+    const response = await fetch('/api/todos', {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json'
@@ -74,7 +74,7 @@ function App() {
     }
 
     const response = await fetch(
-      `http://localhost:7071/api/todos/${id}`,
+      `/api/todos/${id}`,
       {
         method: 'PUT',
         headers: {
@@ -115,7 +115,7 @@ function App() {
 
   async function toggleTodo(id, completed) {
     const response = await fetch(
-      `http://localhost:7071/api/todos/${id}`,
+      `/api/todos/${id}`,
       {
         method: 'PUT',
         headers: {
@@ -143,7 +143,7 @@ function App() {
 
   async function deleteTodo(id) {
     await fetch(
-      `http://localhost:7071/api/todos/${id}`,
+      `/api/todos/${id}`,
       {
         method: 'DELETE'
       }
