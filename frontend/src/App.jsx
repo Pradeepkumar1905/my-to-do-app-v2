@@ -11,14 +11,27 @@ function App() {
   const [editingId, setEditingId] = useState(null)
   const [editTitle, setEditTitle] = useState('')
 
+  // Google authenticated user
+  const [user, setUser] = useState(null)
+
 
   // -----------------------------
-  // Load Todos
+  // Load User + Todos
   // -----------------------------
 
   useEffect(() => {
+    loadUser()
     loadTodos()
   }, [])
+
+  async function loadUser() {
+    const response = await fetch('/.auth/me')
+    const data = await response.json()
+
+    if (data.clientPrincipal) {
+      setUser(data.clientPrincipal)
+    }
+  }
 
   async function loadTodos() {
     const response = await fetch('/api/todos')
@@ -153,6 +166,12 @@ function App() {
       todos.filter((task) => task.id !== id)
     )
   }
+
+
+  // -----------------------------
+  // Format Date
+  // -----------------------------
+
   function formatDate(date) {
     return new Date(date).toLocaleString('en-IN', {
       day: '2-digit',
@@ -164,6 +183,7 @@ function App() {
     })
   }
 
+
   // -----------------------------
   // UI
   // -----------------------------
@@ -171,6 +191,29 @@ function App() {
   return (
     <div>
       <h1>My Todo App</h1>
+
+      {/* -----------------------------
+          Google Authentication
+          ----------------------------- */}
+
+      {user ? (
+        <div>
+          <p>Welcome, {user.userDetails}</p>
+
+          <a href="/.auth/logout">
+            <button>Logout</button>
+          </a>
+        </div>
+      ) : (
+        <a href="/.auth/login/google">
+          <button>Login with Google</button>
+        </a>
+      )}
+
+
+      {/* -----------------------------
+          Todo Input
+          ----------------------------- */}
 
       <input
         type="text"
@@ -182,6 +225,11 @@ function App() {
       <button onClick={addTodo}>
         Add
       </button>
+
+
+      {/* -----------------------------
+          Todo List
+          ----------------------------- */}
 
       <ul>
         {todos.map((task) => (
@@ -223,7 +271,9 @@ function App() {
                 <div>
                   <div
                     style={{
-                      textDecoration: task.completed ? 'line-through' : 'none'
+                      textDecoration: task.completed
+                        ? 'line-through'
+                        : 'none'
                     }}
                   >
                     {task.title}
